@@ -9,7 +9,10 @@ dist/
 build/
 .venv/
 venv/
+ENV/
 .env
+.env.local
+.env.*.local
 
 # OS / IDE
 .DS_Store

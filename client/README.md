@@ -1,6 +1,8 @@
 # Kali MCP Client
 
-Network MCP **client** with an **LLM-powered agent**. Talk to the agent in a REPL; it calls tools on the Kali MCP server over Streamable HTTP.
+Network MCP **client** with an **LLM-powered agent**. Chat in a REPL; the agent calls tools on the Kali MCP server over Streamable HTTP.
+
+**Package:** `kali-mcp-client` · **CLI:** `kali-mcp-client` · **Contact:** [neerajnarwal2000@gmail.com](mailto:neerajnarwal2000@gmail.com)
 
 ## Prerequisites
 
@@ -13,13 +15,14 @@ Network MCP **client** with an **LLM-powered agent**. Talk to the agent in a REP
   - **mistral** — `MISTRAL_API_KEY`
   - **ollama** — local Ollama (`OLLAMA_HOST`, model pulled)
 
-## Setup
+## Install
 
 ```bash
 cd client
-python -m venv .venv
+python3 -m venv .venv
 source .venv/bin/activate   # Windows: .venv\Scripts\activate
-pip install -r requirements.txt
+pip install -U pip
+pip install -e .
 cp .env.example .env
 ```
 
@@ -34,14 +37,16 @@ Edit `.env`:
 | `ANTHROPIC_API_KEY` / `OPENAI_API_KEY` / `GEMINI_API_KEY` / `MISTRAL_API_KEY` | As needed |
 | `OLLAMA_HOST` | Default `http://127.0.0.1:11434` |
 | `MAX_AGENT_TURNS` | Max tool-calling loops per user message |
-| `LOG_DIR` / `LOG_LEVEL` / `LOG_MAX_BYTES` / `LOG_BACKUP_COUNT` | Rotating file logs under `client/logs/client.log` by default |
+| `LOG_DIR` / `LOG_LEVEL` / `LOG_MAX_BYTES` / `LOG_BACKUP_COUNT` | Rotating logs → `client/logs/client.log` |
 
 ## Run
 
 ```bash
+kali-mcp-client
+# or
 python -m kali_mcp_client
 # or
-python -m kali_mcp_client --server http://192.168.1.50:8000/mcp
+kali-mcp-client --server http://192.168.1.50:8000/mcp
 ```
 
 ### REPL commands
@@ -61,4 +66,4 @@ python -m kali_mcp_client --server http://192.168.1.50:8000/mcp
 
 ## Authorized use
 
-The agent is instructed to refuse unauthorized targets, but **you** remain responsible for scope and legality.
+The agent is instructed to refuse unauthorized targets, but **you** remain responsible for scope and legality. See [SECURITY.md](../SECURITY.md).

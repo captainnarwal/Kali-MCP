@@ -1,0 +1,66 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "kali-mcp-client"
+version = "0.1.0"
+description = "LLM-powered MCP client agent for the Kali MCP server"
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.10"
+authors = [
+  { name = "Neeraj Narwal", email = "neerajnarwal2000@gmail.com" },
+]
+maintainers = [
+  { name = "Neeraj Narwal", email = "neerajnarwal2000@gmail.com" },
+]
+keywords = [
+  "mcp",
+  "kali",
+  "pentest",
+  "llm",
+  "agent",
+  "anthropic",
+  "openai",
+  "gemini",
+  "mistral",
+  "ollama",
+]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Environment :: Console",
+  "Intended Audience :: Information Technology",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Security",
+]
+dependencies = [
+  "mcp>=1.9.0",
+  "python-dotenv>=1.0.0",
+  "httpx>=0.27.0",
+  "httpx2>=0.1.0",
+  "anthropic>=0.40.0",
+  "openai>=1.50.0",
+  "mistralai>=1.0.0",
+  "google-genai>=1.0.0",
+  "ollama>=0.3.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/captainnarwal/Kali-MCP"
+Repository = "https://github.com/captainnarwal/Kali-MCP"
+Issues = "https://github.com/captainnarwal/Kali-MCP/issues"
+Documentation = "https://github.com/captainnarwal/Kali-MCP/blob/main/client/README.md"
+
+[project.scripts]
+kali-mcp-client = "kali_mcp_client.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["kali_mcp_client*"]
