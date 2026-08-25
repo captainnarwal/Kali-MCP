@@ -73,30 +73,37 @@ class KaliMCPClient:
         self._stack = AsyncExitStack()
         await self._stack.__aenter__()
 
-        headers: dict[str, str] = {}
-        if self.auth_token:
-            headers["Authorization"] = f"Bearer {self.auth_token}"
+        try:
+            headers: dict[str, str] = {}
+            if self.auth_token:
+                headers["Authorization"] = f"Bearer {self.auth_token}"
 
-        if api_ver == "v2":
-            http_client = _make_http_client(headers)
-            await self._stack.enter_async_context(http_client)
-            streams = await self._stack.enter_async_context(
-                streamable_client(self.server_url, http_client=http_client)
-            )
-            if isinstance(streams, tuple) and len(streams) >= 2:
-                read_stream, write_stream = streams[0], streams[1]
+            if api_ver == "v2":
+                http_client = _make_http_client(headers)
+                await self._stack.enter_async_context(http_client)
+                streams = await self._stack.enter_async_context(
+                    streamable_client(self.server_url, http_client=http_client)
+                )
+                if isinstance(streams, tuple) and len(streams) >= 2:
+                    read_stream, write_stream = streams[0], streams[1]
+                else:
+                    raise RuntimeError("Unexpected streamable_http_client return value")
             else:
-                raise RuntimeError("Unexpected streamable_http_client return value")
-        else:
-            streams = await self._stack.enter_async_context(
-                streamable_client(self.server_url, headers=headers)
-            )
-            read_stream, write_stream = streams[0], streams[1]
+                streams = await self._stack.enter_async_context(
+                    streamable_client(self.server_url, headers=headers)
+                )
+                read_stream, write_stream = streams[0], streams[1]
 
-        self._session = await self._stack.enter_async_context(
-            ClientSession(read_stream, write_stream)
-        )
-        await self._session.initialize()
+            self._session = await self._stack.enter_async_context(
+                ClientSession(read_stream, write_stream)
+            )
+            await self._session.initialize()
+        except BaseException:
+            try:
+                await self.close()
+            except Exception:
+                logger.debug("Error while closing after failed connect", exc_info=True)
+            raise
         logger.info("Connected to MCP server at %s", self.server_url)
 
     async def close(self) -> None:

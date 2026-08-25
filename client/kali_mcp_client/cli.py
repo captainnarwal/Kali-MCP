@@ -49,6 +49,12 @@ async def repl(server_url: str | None = None) -> int:
             "Is the server running? Check MCP_SERVER_URL and MCP_AUTH_TOKEN.",
             file=sys.stderr,
         )
+        print(
+            "HTTP 421 usually means the server rejected the Host header "
+            "(common with a WSL/LAN IP). Restart the Kali server after updating "
+            "it, or set MCP_ALLOWED_HOSTS on the server to that IP.",
+            file=sys.stderr,
+        )
         return 1
 
     agent = Agent(mcp, llm)

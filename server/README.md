@@ -29,6 +29,7 @@ Edit `.env`:
 |----------|---------|
 | `MCP_HOST` / `MCP_PORT` | Bind address (default `0.0.0.0:8000`) |
 | `MCP_AUTH_TOKEN` | Shared secret; client sends `Authorization: Bearer …` |
+| `MCP_ALLOWED_HOSTS` | Comma-separated Host values to accept (LAN/WSL IP). Empty + `MCP_HOST=0.0.0.0` disables DNS-rebinding Host checks |
 | `ALLOW_RAW` | `true` to enable `run_command` |
 | `DEFAULT_TIMEOUT` | Subprocess timeout seconds (default `300`) |
 | `*_PATH` | Optional override for each binary |

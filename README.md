@@ -64,6 +64,7 @@ flowchart LR
 ## Security notes
 
 - Bearer token auth when `MCP_AUTH_TOKEN` is set (recommended).
+- Streamable HTTP Host-header checks: set `MCP_ALLOWED_HOSTS` on the server (LAN/WSL IP) or leave it empty with `MCP_HOST=0.0.0.0` so DNS-rebinding protection does not reject those clients with HTTP 421.
 - Structured tools use argv subprocess (no shell); binary allowlist + timeouts.
 - No TLS in-process — put the server behind a VPN or reverse proxy with TLS for real deployments.
 - Raw shell is opt-in (`ALLOW_RAW`).

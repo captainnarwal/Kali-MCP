@@ -21,12 +21,21 @@ class Settings:
     allow_raw: bool = False
     default_timeout: int = 300
     binaries: dict[str, str] = field(default_factory=dict)
+    allowed_hosts: tuple[str, ...] = ()
+    allowed_origins: tuple[str, ...] = ()
 
 
 def _truthy(value: str | None, default: bool = False) -> bool:
     if value is None or value.strip() == "":
         return default
     return value.strip().lower() in {"1", "true", "yes", "on"}
+
+
+def _csv(name: str) -> tuple[str, ...]:
+    raw = os.getenv(name, "").strip()
+    if not raw:
+        return ()
+    return tuple(part.strip() for part in raw.split(",") if part.strip())
 
 
 def load_settings() -> Settings:
@@ -49,6 +58,8 @@ def load_settings() -> Settings:
         allow_raw=_truthy(os.getenv("ALLOW_RAW"), default=False),
         default_timeout=int(os.getenv("DEFAULT_TIMEOUT", "300")),
         binaries=binaries,
+        allowed_hosts=_csv("MCP_ALLOWED_HOSTS"),
+        allowed_origins=_csv("MCP_ALLOWED_ORIGINS"),
     )
 
 
