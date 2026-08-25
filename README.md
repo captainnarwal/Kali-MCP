@@ -24,16 +24,21 @@ User ──► Client (LLM agent) ──Streamable HTTP──► Server (Kali to
 
 ### 1. Server (on Kali)
 
+Full clone + `sudo apt` steps: see [`server/README.md`](server/README.md#setup-from-scratch).
+
 ```bash
-cd server
-python -m venv .venv
+git clone https://github.com/captainnarwal/Kali-MCP.git
+cd Kali-MCP/server
+sudo apt update
+sudo apt install -y python3-venv nmap dirb gobuster nikto enum4linux wpscan sqlmap hydra john metasploit-framework
+python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 cp .env.example .env   # set MCP_AUTH_TOKEN
 python -m kali_mcp_server
 ```
 
-Listens at `http://0.0.0.0:8000/mcp` by default. Install the Kali packages for the tools you need (nmap, gobuster, etc.); the server wraps them, it does not install them.
+Listens at `http://0.0.0.0:8000/mcp` by default. Install the Kali packages for the tools you need; the server wraps them, it does not install them.
 
 ### 2. Client (any machine)
 
