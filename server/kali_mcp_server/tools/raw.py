@@ -5,7 +5,7 @@ from __future__ import annotations
 from mcp.server import MCPServer
 
 from kali_mcp_server.config import settings
-from kali_mcp_server.runner import run_shell
+from kali_mcp_server.runner import TOOL_EXCEPTION_TYPES, run_shell, tool_error
 
 
 def register(mcp: MCPServer) -> None:
@@ -20,6 +20,9 @@ def register(mcp: MCPServer) -> None:
             command: Shell command string to execute.
             timeout: Optional timeout in seconds. 0 uses the server default.
         """
-        effective = timeout if timeout and timeout > 0 else settings.default_timeout
-        result = await run_shell(command, timeout=effective)
-        return result.format()
+        try:
+            effective = timeout if timeout and timeout > 0 else settings.default_timeout
+            result = await run_shell(command, timeout=effective)
+            return result.format()
+        except TOOL_EXCEPTION_TYPES as exc:
+            return tool_error(exc)

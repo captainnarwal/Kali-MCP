@@ -34,6 +34,7 @@ Edit `.env`:
 | `ANTHROPIC_API_KEY` / `OPENAI_API_KEY` / `GEMINI_API_KEY` / `MISTRAL_API_KEY` | As needed |
 | `OLLAMA_HOST` | Default `http://127.0.0.1:11434` |
 | `MAX_AGENT_TURNS` | Max tool-calling loops per user message |
+| `LOG_DIR` / `LOG_LEVEL` / `LOG_MAX_BYTES` / `LOG_BACKUP_COUNT` | Rotating file logs under `client/logs/client.log` by default |
 
 ## Run
 

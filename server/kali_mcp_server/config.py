@@ -23,6 +23,10 @@ class Settings:
     binaries: dict[str, str] = field(default_factory=dict)
     allowed_hosts: tuple[str, ...] = ()
     allowed_origins: tuple[str, ...] = ()
+    log_dir: Path = field(default_factory=lambda: Path("logs"))
+    log_level: str = "INFO"
+    log_max_bytes: int = 5_000_000
+    log_backup_count: int = 5
 
 
 def _truthy(value: str | None, default: bool = False) -> bool:
@@ -51,6 +55,8 @@ def load_settings() -> Settings:
         "john": os.getenv("JOHN_PATH", "john"),
         "msfconsole": os.getenv("MSFCONSOLE_PATH", "msfconsole"),
     }
+    default_log_dir = Path(__file__).resolve().parent.parent / "logs"
+    log_dir_raw = os.getenv("LOG_DIR", "").strip()
     return Settings(
         host=os.getenv("MCP_HOST", "0.0.0.0"),
         port=int(os.getenv("MCP_PORT", "8000")),
@@ -60,6 +66,10 @@ def load_settings() -> Settings:
         binaries=binaries,
         allowed_hosts=_csv("MCP_ALLOWED_HOSTS"),
         allowed_origins=_csv("MCP_ALLOWED_ORIGINS"),
+        log_dir=Path(log_dir_raw) if log_dir_raw else default_log_dir,
+        log_level=os.getenv("LOG_LEVEL", "INFO").strip() or "INFO",
+        log_max_bytes=int(os.getenv("LOG_MAX_BYTES", "5000000")),
+        log_backup_count=int(os.getenv("LOG_BACKUP_COUNT", "5")),
     )
 
 

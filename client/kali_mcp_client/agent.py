@@ -17,9 +17,10 @@ You help the user run reconnaissance and DAST tools (nmap, dirb, gobuster, nikto
 Rules:
 - Only operate on targets the user explicitly authorizes in this conversation.
 - Prefer structured MCP tools over raw shell when a dedicated tool exists.
+- For nmap / enum4linux / hydra, pass a hostname or IP (e.g. scanme.nmap.org), not an http(s) URL.
 - Explain what you are about to run and summarize results clearly.
-- If a tool fails (missing binary, timeout, auth error), report the error and suggest fixes.
-- Do not invent scan results; base answers on tool output.
+- If a tool returns "TOOL ERROR" or fails (missing binary, ALLOW_RAW disabled, timeout), report that exact error. Suggest fixes (install the package on Kali, set *_PATH, or ALLOW_RAW=true). Optionally call server_status.
+- NEVER invent, simulate, guess, or fabricate scan output. If tools fail, say so and stop — do not present "expected" or "typical" results as if they were run.
 - Refuse requests that clearly target systems the user does not own or have permission to test.
 """
 
@@ -85,7 +86,10 @@ class Agent:
                     try:
                         result_text = await self.mcp.call_tool(tc.name, tc.arguments)
                     except Exception as exc:  # noqa: BLE001 — surface to LLM
-                        result_text = f"Error calling tool {tc.name}: {exc}"
+                        result_text = f"TOOL ERROR: Error calling tool {tc.name}: {exc}"
+                        logger.warning("%s", result_text)
+                    if result_text.startswith("TOOL ERROR"):
+                        logger.warning("Tool %s failed: %s", tc.name, result_text[:500])
                     self.messages.append(
                         {
                             "role": "tool",

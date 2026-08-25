@@ -8,10 +8,14 @@ import shlex
 import shutil
 from dataclasses import dataclass
 from pathlib import Path
+from urllib.parse import urlparse
 
 from kali_mcp_server.config import ALLOWED_BINARIES, settings
 
 logger = logging.getLogger(__name__)
+
+# Expected failures returned to the LLM as text (not MCP UnexpectedToolError).
+TOOL_EXCEPTION_TYPES = (FileNotFoundError, PermissionError, ValueError, OSError)
 
 
 @dataclass
@@ -35,6 +39,39 @@ class CommandResult:
         return "\n".join(parts)
 
 
+def tool_error(exc: BaseException) -> str:
+    """Format an expected tool failure for the MCP client / LLM."""
+    msg = f"TOOL ERROR: {exc}"
+    logger.error("%s", msg)
+    return msg
+
+
+def normalize_host_target(target: str) -> str:
+    """Strip URL schemes/paths so host tools (nmap, etc.) get a hostname/IP.
+
+    'http://scanme.nmap.org/' -> 'scanme.nmap.org'
+    'https://example.com:8443/path' -> 'example.com:8443'
+    """
+    raw = (target or "").strip()
+    if not raw:
+        raise ValueError("Target is empty")
+
+    if "://" in raw:
+        parsed = urlparse(raw)
+        host = parsed.hostname
+        if not host:
+            raise ValueError(f"Could not parse host from target: {target!r}")
+        if parsed.port:
+            return f"{host}:{parsed.port}"
+        return host
+
+    # host/path or bare host — take host[:port] only
+    host_part = raw.split("/")[0].strip()
+    if not host_part:
+        raise ValueError(f"Could not parse host from target: {target!r}")
+    return host_part
+
+
 def resolve_binary(name: str) -> str:
     """Resolve a configured tool name to an executable path."""
     configured = settings.binaries.get(name, name)
@@ -44,7 +81,8 @@ def resolve_binary(name: str) -> str:
     if path is None:
         raise FileNotFoundError(
             f"Binary '{name}' not found (looked for '{configured}'). "
-            "Install it on Kali or set the corresponding *_PATH env var."
+            "Install it on Kali (e.g. `sudo apt install nmap`) or set the "
+            "corresponding *_PATH env var."
         )
     return path
 

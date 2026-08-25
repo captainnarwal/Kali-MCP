@@ -16,3 +16,9 @@ Thumbs.db
 *.log
 .pytest_cache/
 .mypy_cache/
+
+# Keep log dirs in git; ignore rotated log files
+server/logs/*
+!server/logs/.gitkeep
+client/logs/*
+!client/logs/.gitkeep

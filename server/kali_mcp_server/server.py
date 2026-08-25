@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import logging
 import secrets
 
 import uvicorn
@@ -12,6 +11,7 @@ from starlette.requests import Request
 from starlette.responses import JSONResponse, Response
 
 from kali_mcp_server.config import settings
+from kali_mcp_server.logging_config import setup_logging
 from kali_mcp_server.runner import check_binaries
 from kali_mcp_server.tools import register_tools
 
@@ -25,18 +25,23 @@ _LOOPBACK_HOSTS = (
 )
 _LOOPBACK_BIND = {"127.0.0.1", "localhost", "::1", "[::1]"}
 
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
+logger = setup_logging(
+    log_dir=settings.log_dir,
+    level=settings.log_level,
+    max_bytes=settings.log_max_bytes,
+    backup_count=settings.log_backup_count,
 )
-logger = logging.getLogger("kali_mcp_server")
 
 mcp = MCPServer(
     "kali-mcp",
     instructions=(
         "Kali Linux pentest/DAST tool server. Use only against systems you are "
         "authorized to test. Tools wrap nmap, dirb, gobuster, nikto, enum4linux, "
-        "wpscan, sqlmap, hydra, john, metasploit, and optional raw commands."
+        "wpscan, sqlmap, hydra, john, metasploit, and optional raw commands. "
+        "For host scanners (nmap, enum4linux, hydra) pass a hostname or IP — "
+        "not a full http(s) URL. If a tool returns TOOL ERROR about a missing "
+        "binary, call server_status and tell the user to install the package on Kali. "
+        "Never invent or simulate scan output."
     ),
 )
 

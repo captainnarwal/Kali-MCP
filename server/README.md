@@ -32,6 +32,7 @@ Edit `.env`:
 | `MCP_ALLOWED_HOSTS` | Comma-separated Host values to accept (LAN/WSL IP). Empty + `MCP_HOST=0.0.0.0` disables DNS-rebinding Host checks |
 | `ALLOW_RAW` | `true` to enable `run_command` |
 | `DEFAULT_TIMEOUT` | Subprocess timeout seconds (default `300`) |
+| `LOG_DIR` / `LOG_LEVEL` / `LOG_MAX_BYTES` / `LOG_BACKUP_COUNT` | Rotating file logs under `server/logs/server.log` by default |
 | `*_PATH` | Optional override for each binary |
 
 ## Run
@@ -48,6 +49,7 @@ Startup logs list which tool binaries were found on `PATH`.
 
 | Tool | Description |
 |------|-------------|
+| `server_status` | Installed binaries + `ALLOW_RAW` |
 | `nmap_scan` | Nmap |
 | `dirb_scan` | Dirb |
 | `gobuster_scan` | Gobuster |

@@ -10,12 +10,9 @@ import sys
 from kali_mcp_client.agent import Agent
 from kali_mcp_client.config import settings
 from kali_mcp_client.llm import create_provider
+from kali_mcp_client.logging_config import setup_logging
 from kali_mcp_client.mcp_client import KaliMCPClient
 
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
-)
 logger = logging.getLogger("kali_mcp_client")
 
 
@@ -92,6 +89,7 @@ async def repl(server_url: str | None = None) -> int:
             try:
                 reply = await agent.run_turn(user_text)
             except Exception as exc:
+                logger.exception("Agent turn failed")
                 print(f"agent> Error: {exc}\n")
                 continue
             print(f"agent> {reply}\n")
@@ -115,8 +113,14 @@ def main(argv: list[str] | None = None) -> None:
         help="Enable debug logging",
     )
     args = parser.parse_args(argv)
-    if args.verbose:
-        logging.getLogger().setLevel(logging.DEBUG)
+
+    level = "DEBUG" if args.verbose else settings.log_level
+    setup_logging(
+        log_dir=settings.log_dir,
+        level=level,
+        max_bytes=settings.log_max_bytes,
+        backup_count=settings.log_backup_count,
+    )
 
     raise SystemExit(asyncio.run(repl(server_url=args.server)))
 

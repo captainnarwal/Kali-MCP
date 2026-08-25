@@ -127,10 +127,14 @@ class KaliMCPClient:
         result = await session.list_tools()
         tools: list[dict[str, Any]] = []
         for tool in result.tools:
-            schema = tool.inputSchema or {
-                "type": "object",
-                "properties": {},
-            }
+            schema = (
+                getattr(tool, "input_schema", None)
+                or getattr(tool, "inputSchema", None)
+                or {
+                    "type": "object",
+                    "properties": {},
+                }
+            )
             tools.append(
                 {
                     "name": tool.name,
@@ -156,12 +160,17 @@ class KaliMCPClient:
             else:
                 parts.append(str(block))
 
-        if getattr(result, "isError", False):
-            return "TOOL ERROR:\n" + ("\n".join(parts) if parts else "(no details)")
+        if getattr(result, "is_error", None) or getattr(result, "isError", False):
+            err = "TOOL ERROR:\n" + ("\n".join(parts) if parts else "(no details)")
+            logger.warning("MCP tool %s error: %s", name, err[:500])
+            return err
 
-        return "\n".join(parts) if parts else json.dumps(
+        text = "\n".join(parts) if parts else json.dumps(
             {"status": "ok", "content": str(result.content)}
         )
+        if text.startswith("TOOL ERROR"):
+            logger.warning("MCP tool %s returned error: %s", name, text[:500])
+        return text
 
     def tools_for_openai(self, tools: list[dict[str, Any]] | None = None) -> list[dict]:
         tools = tools if tools is not None else (self._tools_cache or [])

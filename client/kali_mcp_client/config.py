@@ -24,6 +24,10 @@ class Settings:
     mistral_api_key: str
     ollama_host: str
     max_agent_turns: int
+    log_dir: Path
+    log_level: str
+    log_max_bytes: int
+    log_backup_count: int
 
 
 def load_settings() -> Settings:
@@ -31,6 +35,8 @@ def load_settings() -> Settings:
         os.getenv("GEMINI_API_KEY", "").strip()
         or os.getenv("GOOGLE_API_KEY", "").strip()
     )
+    default_log_dir = Path(__file__).resolve().parent.parent / "logs"
+    log_dir_raw = os.getenv("LOG_DIR", "").strip()
     return Settings(
         server_url=os.getenv("MCP_SERVER_URL", "http://127.0.0.1:8000/mcp").rstrip(
             "/"
@@ -44,6 +50,10 @@ def load_settings() -> Settings:
         mistral_api_key=os.getenv("MISTRAL_API_KEY", "").strip(),
         ollama_host=os.getenv("OLLAMA_HOST", "http://127.0.0.1:11434").strip(),
         max_agent_turns=int(os.getenv("MAX_AGENT_TURNS", "20")),
+        log_dir=Path(log_dir_raw) if log_dir_raw else default_log_dir,
+        log_level=os.getenv("LOG_LEVEL", "INFO").strip() or "INFO",
+        log_max_bytes=int(os.getenv("LOG_MAX_BYTES", "5000000")),
+        log_backup_count=int(os.getenv("LOG_BACKUP_COUNT", "5")),
     )
 
 
