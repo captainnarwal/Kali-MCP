@@ -89,6 +89,8 @@ kali-mcp-client
 # equivalent: python -m kali_mcp_client
 ```
 
+**No LLM API yet?** [Mistral](https://console.mistral.ai) offers a free API key (no credit card). Sign up at [console.mistral.ai](https://console.mistral.ai) → **API Keys** → **Create new key** → set `LLM_PROVIDER=mistral` and `MISTRAL_API_KEY` in `.env`.
+
 Details & REPL commands: [`client/README.md`](client/README.md)
 
 ## Architecture
