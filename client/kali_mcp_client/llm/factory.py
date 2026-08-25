@@ -6,6 +6,7 @@ from kali_mcp_client.config import settings
 from kali_mcp_client.llm.anthropic_provider import AnthropicProvider
 from kali_mcp_client.llm.base import LLMProvider
 from kali_mcp_client.llm.gemini_provider import GeminiProvider
+from kali_mcp_client.llm.mistral_provider import MistralProvider
 from kali_mcp_client.llm.ollama_provider import OllamaProvider
 from kali_mcp_client.llm.openai_provider import OpenAIProvider
 
@@ -18,9 +19,11 @@ def create_provider(name: str | None = None) -> LLMProvider:
         return OpenAIProvider()
     if provider in {"gemini", "google"}:
         return GeminiProvider()
+    if provider == "mistral":
+        return MistralProvider()
     if provider == "ollama":
         return OllamaProvider()
     raise ValueError(
         f"Unknown LLM_PROVIDER '{provider}'. "
-        "Choose: anthropic, openai, gemini, ollama"
+        "Choose: anthropic, openai, gemini, mistral, ollama"
     )

@@ -54,7 +54,7 @@ class Agent:
         if self._provider_name in {"gemini", "google"}:
             # Gemini provider accepts Anthropic-style {name, description, input_schema}
             return self._anthropic_tools
-        # openai + ollama
+        # openai + mistral + ollama (OpenAI-compatible tool schema)
         return self._openai_tools
 
     async def run_turn(self, user_text: str) -> str:

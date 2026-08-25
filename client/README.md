@@ -10,6 +10,7 @@ Network MCP **client** with an **LLM-powered agent**. Talk to the agent in a REP
   - **anthropic** — `ANTHROPIC_API_KEY`
   - **openai** — `OPENAI_API_KEY`
   - **gemini** — `GEMINI_API_KEY` (or `GOOGLE_API_KEY`)
+  - **mistral** — `MISTRAL_API_KEY`
   - **ollama** — local Ollama (`OLLAMA_HOST`, model pulled)
 
 ## Setup
@@ -28,9 +29,9 @@ Edit `.env`:
 |----------|---------|
 | `MCP_SERVER_URL` | e.g. `http://kali-host:8000/mcp` |
 | `MCP_AUTH_TOKEN` | Must match server token |
-| `LLM_PROVIDER` | `anthropic` \| `openai` \| `gemini` \| `ollama` |
+| `LLM_PROVIDER` | `anthropic` \| `openai` \| `gemini` \| `mistral` \| `ollama` |
 | `LLM_MODEL` | Model id for that provider |
-| `ANTHROPIC_API_KEY` / `OPENAI_API_KEY` / `GEMINI_API_KEY` | As needed |
+| `ANTHROPIC_API_KEY` / `OPENAI_API_KEY` / `GEMINI_API_KEY` / `MISTRAL_API_KEY` | As needed |
 | `OLLAMA_HOST` | Default `http://127.0.0.1:11434` |
 | `MAX_AGENT_TURNS` | Max tool-calling loops per user message |
 

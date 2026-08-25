@@ -9,7 +9,7 @@ User ──► Client (LLM agent) ──Streamable HTTP──► Server (Kali to
 | Component | Role | LLM? |
 |-----------|------|------|
 | [`server/`](server/) | Exposes Kali tools over MCP Streamable HTTP | No |
-| [`client/`](client/) | Chat agent that calls those tools via MCP | Yes (Anthropic / OpenAI / Gemini / Ollama) |
+| [`client/`](client/) | Chat agent that calls those tools via MCP | Yes (Anthropic / OpenAI / Gemini / Mistral / Ollama) |
 
 ## Tools exposed by the server
 

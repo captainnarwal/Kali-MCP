@@ -21,6 +21,7 @@ class Settings:
     anthropic_api_key: str
     openai_api_key: str
     gemini_api_key: str
+    mistral_api_key: str
     ollama_host: str
     max_agent_turns: int
 
@@ -40,6 +41,7 @@ def load_settings() -> Settings:
         anthropic_api_key=os.getenv("ANTHROPIC_API_KEY", "").strip(),
         openai_api_key=os.getenv("OPENAI_API_KEY", "").strip(),
         gemini_api_key=gemini_key,
+        mistral_api_key=os.getenv("MISTRAL_API_KEY", "").strip(),
         ollama_host=os.getenv("OLLAMA_HOST", "http://127.0.0.1:11434").strip(),
         max_agent_turns=int(os.getenv("MAX_AGENT_TURNS", "20")),
     )
